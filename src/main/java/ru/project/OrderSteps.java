@@ -5,7 +5,7 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
 import static io.restassured.RestAssured.given;
-import static ru.project.Endpoints.CREATE_ORDER;
+import static ru.project.Endpoints.*;
 
 public class OrderSteps {
 

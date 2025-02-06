@@ -1,5 +1,6 @@
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
+import org.junit.After;
 import ru.project.CourierSteps;
 import ru.project.NewCourier;
 import ru.project.LoginCourier;
@@ -12,6 +13,8 @@ public class LoginCourierTest {
     public static String login = "n1nja";
     public static String password = "1234";
     public static String firstName = "saske";
+    public static String wrongPassword = "9876";
+    public static String wrongLogin = "ninjaj123a";
 
     @Test
     @DisplayName("Авторизация курьера")
@@ -25,11 +28,9 @@ public class LoginCourierTest {
         courierSteps.courierCreate(courierCreateRequest);
 
         courierSteps.courierLogin(courierLoginRequest)
-                .assertThat().body("id", instanceOf(Integer.class))
-                .and()
-                .statusCode(200);
-
-        courierSteps.courierDeleteAfterLogin(courierLoginRequest);
+                .assertThat().statusCode(200);
+        courierSteps.courierLogin(courierLoginRequest)
+                .assertThat().body("id", instanceOf(Integer.class));
 
     }
 
@@ -45,12 +46,10 @@ public class LoginCourierTest {
         courierSteps.courierCreate(courierCreateRequest);
 
         courierSteps.courierLogin(courierLoginRequest)
-                .assertThat().body("message", equalTo("Недостаточно данных для входа"))
-                .and()
-                .statusCode(400);
+                .assertThat().statusCode(400);
+        courierSteps.courierLogin(courierLoginRequest)
+                .assertThat().body("message", equalTo("Недостаточно данных для входа"));
 
-        LoginCourier validCourierLoginRequest = new LoginCourier(login, password);
-        courierSteps.courierDeleteAfterLogin(validCourierLoginRequest);
 
     }
 
@@ -66,12 +65,10 @@ public class LoginCourierTest {
         courierSteps.courierCreate(courierCreateRequest);
 
         courierSteps.courierLogin(courierLoginRequest)
-                .assertThat().body("message", equalTo("Недостаточно данных для входа"))
-                .and()
-                .statusCode(400);
+                .assertThat().statusCode(400);
+        courierSteps.courierLogin(courierLoginRequest)
+                .assertThat().body("message", equalTo("Недостаточно данных для входа"));
 
-        LoginCourier validCourierLoginRequest = new LoginCourier(login, password);
-        courierSteps.courierDeleteAfterLogin(validCourierLoginRequest);
 
     }
 
@@ -84,11 +81,44 @@ public class LoginCourierTest {
         CourierSteps courierSteps = new CourierSteps();
 
         courierSteps.courierLogin(courierLoginRequest)
-                .assertThat().body("message", equalTo("Учетная запись не найдена"))
-                .and()
-                .statusCode(404);
-
+                .assertThat().statusCode(404);
+        courierSteps.courierLogin(courierLoginRequest)
+                .assertThat().body("message", equalTo("Учетная запись не найдена"));
     }
 
+    @Test
+    @DisplayName("Авторизация курьера c неверным паролем")
+    @Description("Проверка невозможности авторизации c неверным паролем")
+    public void loginCourierWithWrongPassword () {
+        NewCourier courierCreateRequest = new NewCourier(login, password, firstName);
+        LoginCourier courierLoginRequest = new LoginCourier(login, wrongPassword);
+        CourierSteps courierSteps = new CourierSteps();
+
+        courierSteps.courierLogin(courierLoginRequest)
+                .assertThat().statusCode(404);
+        courierSteps.courierLogin(courierLoginRequest)
+                .assertThat().body("message", equalTo("Учетная запись не найдена"));
+    }
+
+    @Test
+    @DisplayName("Авторизация курьера c неверным логином")
+    @Description("Проверка невозможности авторизации c неверным логином")
+    public void loginCourierWithWrongLogin () {
+        NewCourier courierCreateRequest = new NewCourier(login, password, firstName);
+        LoginCourier courierLoginRequest = new LoginCourier(wrongLogin, password);
+        CourierSteps courierSteps = new CourierSteps();
+
+        courierSteps.courierLogin(courierLoginRequest)
+                .assertThat().statusCode(404);
+        courierSteps.courierLogin(courierLoginRequest)
+                .assertThat().body("message", equalTo("Учетная запись не найдена"));
+    }
+
+    @After
+    public void deleteCourier() {
+        CourierSteps courierSteps = new CourierSteps();
+        LoginCourier validCourierLoginRequest = new LoginCourier(login, password);
+        courierSteps.courierDeleteAfterLogin(validCourierLoginRequest);
+    }
 
 }

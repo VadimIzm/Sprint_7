@@ -35,9 +35,9 @@ public class NewOrderTest {
         OrderSteps orderSteps = new OrderSteps();
 
         orderSteps.orderCreate(orderCreateRequest)
-                .assertThat().body("track", instanceOf(Integer.class))
-                .and()
-                .statusCode(201);
+                .assertThat().statusCode(201);
+        orderSteps.orderCreate(orderCreateRequest)
+                .assertThat().body("track", instanceOf(Integer.class));
 
     }
 }

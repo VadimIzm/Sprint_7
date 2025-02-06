@@ -23,9 +23,8 @@ public class NewCourierTest {
         CourierSteps courierSteps = new CourierSteps();
 
         courierSteps.courierCreate(courierCreateRequest)
-                .assertThat().body("ok", equalTo(true))
-                .and()
-                .statusCode(201);
+                .statusCode(201)
+                .assertThat().body("ok", equalTo(true));
 
         courierSteps.courierDeleteAfterLogin(courierLoginRequest);
     }
@@ -40,14 +39,12 @@ public class NewCourierTest {
         CourierSteps courierSteps = new CourierSteps();
 
         courierSteps.courierCreate(courierCreateRequest)
-                .assertThat().body("ok", equalTo(true))
-                .and()
-                .statusCode(201);
+                .statusCode(201)
+                .assertThat().body("ok", equalTo(true));
 
         courierSteps.courierCreate(courierCreateRequest)
-                .assertThat().body("message", equalTo("Этот логин уже используется. Попробуйте другой."))
-                .and()
-                .statusCode(409);
+                .statusCode(409)
+                .assertThat().body("message", equalTo("Этот логин уже используется. Попробуйте другой."));
 
         courierSteps.courierDeleteAfterLogin(courierLoginRequest);
     }
@@ -60,9 +57,8 @@ public class NewCourierTest {
         CourierSteps courierSteps = new CourierSteps();
 
         courierSteps.courierCreate(courierCreateRequest)
-                .assertThat().body("message", equalTo("Недостаточно данных для создания учетной записи"))
-                .and()
-                .statusCode(400);
+                .statusCode(400)
+                .assertThat().body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
 
     @Test
@@ -73,9 +69,8 @@ public class NewCourierTest {
         CourierSteps courierSteps = new CourierSteps();
 
         courierSteps.courierCreate(courierCreateRequest)
-                .assertThat().body("message", equalTo("Недостаточно данных для создания учетной записи"))
-                .and()
-                .statusCode(400);
+                .statusCode(400)
+                .assertThat().body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
 
 } //конечная
